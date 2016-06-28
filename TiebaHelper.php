@@ -290,7 +290,6 @@ class TiebaHelper {
 		//save
 		$this->token = $mat[0];
 		
-		echo "\n" . "token:" . $this->token . "\n";
 		return true;
 	}
 
