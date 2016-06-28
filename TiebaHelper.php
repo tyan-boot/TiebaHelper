@@ -146,9 +146,11 @@ class TiebaHelper {
 	{
 		$this->dout("Start Login...");
 		
-		$this->_LoginConstruct();
-		//$this->user = $user;
-		//$this->passwd = $passwd;
+		if ($vcode == '')
+		{
+			$this->_LoginConstruct();
+		}
+
 		$time = $this->GetTime();
 		//curl
 		$ch = curl_init();
@@ -157,7 +159,7 @@ class TiebaHelper {
 		'staticpage' => 'http://www.baidu.com/cache/user/html/v3Jump.html',
 		'charset' => 'UTF-8',
 		'token' => $this->token,
-		'tpl' => 'mn',
+		'tpl' => 'pp',
 		'apiver' => 'v3',
 		'tt' => $time,
 		'codestring' => $this->codeStr,
@@ -166,13 +168,9 @@ class TiebaHelper {
 		'isPhone' => 'false',
 		'quick_user' => 0,
 		'logintype' => 'dialogLogin',
-		'splogin' => 'newuser',
 		'username' => $this->user,
 		'password' => $this->passwd,
 		'verifycode' => $vcode,
-		'mem_pass' => 'on',
-		'ppui_logintime' => '6810',
-		'callback' => 'parent.bd__pcbs__gz2yq1'
 		);
 		$postf = $this->array2urlencode( $posta );
 		
@@ -182,7 +180,8 @@ class TiebaHelper {
 		CURLOPT_HEADER => 1,
 		CURLOPT_RETURNTRANSFER => true,
 		CURLOPT_URL => 'http://passport.baidu.com/v2/api/?login',
-		CURLOPT_POSTFIELDS => $postf
+		CURLOPT_POSTFIELDS => $postf,
+		CURLOPT_USERAGENT => "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2774.3 Safari/537.36"
 		);
 		curl_setopt_array( $ch, $opt );
 		
@@ -195,7 +194,7 @@ class TiebaHelper {
 		$err = $mat[0];
 		
 		if ( $err != 0 ) {
-			print_r($get);
+			//print_r($get);
 			//sorry, something wrong happend when try to login
 			//try to find codeString
 			$pattern = '/(?<=codeString=)[^&]+?(?=&)/';
@@ -207,7 +206,8 @@ class TiebaHelper {
 				$this->rtn['err_no'] = $err;
 				$this->rtn['imgUrl'] = 'https://passport.baidu.com/cgi-bin/genimage?' . $mat[0];
 				$this->codeStr = $mat[0];
-				
+				//print_r($this->codeStr);
+
 				$this->dout($this->rtn);
 				
 				return $this->rtn;
@@ -267,7 +267,8 @@ class TiebaHelper {
 		$opt = array(
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_HEADER => 1, 		//I need some header information
-			CURLOPT_URL => $hurl
+			CURLOPT_URL => $hurl,
+			CURLOPT_USERAGENT => "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2774.3 Safari/537.36"
 		);
 		curl_setopt_array( $ch, $opt );
 		$get = curl_exec( $ch );
@@ -288,7 +289,8 @@ class TiebaHelper {
 		preg_match( $pattern, $get, $mat );
 		//save
 		$this->token = $mat[0];
-	
+		
+		echo "\n" . "token:" . $this->token . "\n";
 		return true;
 	}
 
