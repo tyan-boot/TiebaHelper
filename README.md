@@ -33,7 +33,33 @@ $tb->SetUser(USER_NAME);
 $tb->SetPW(USER_PASSWORD);
 
 //Then log in
-$tb->Login();
+$rtn = $tb->Login();
+
+//Check $rtn['err_no']
+
+if ($rtn['err_no'] == 0)
+{
+  //Login success
+}else
+{
+  if ($rtn['err_no'] == 257)
+  {
+    //You need vcode
+    $imgUrl = $rtn['imgUrl'];
+    //Open url above and get the code
+    //and login again
+    $rtn = $tb->Login(VCODE_YOU_GOT_BEFORE);
+    
+    if($rtn['err_no'] == 0)
+    {
+      //login success
+    }else
+    {
+      //sorry still error
+      //but who care?
+    }
+  }
+}
 ```
 ####Post a new topic
 ```php
